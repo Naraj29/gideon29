@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Film } from 'lucide-react';
 import mediaService from '../services/mediaService';
+import { useTheme } from '../../../context/ThemeContext';
 
 const MEDIA_TYPES = ["Movie", "Series", "Anime", "Comic", "Book", "Game", "Podcast", "Other"];
 const STATUS_CHOICES = ["Planning", "Active", "Completed", "Dropped", "OnHold"];
 
 export default function ItemModal({ isOpen, onClose, onSave, initialData, groupId }) {
+  const { isDark } = useTheme();
   const [formData, setFormData] = useState({
     title: '',
     media_type: 'Movie',
@@ -32,7 +34,10 @@ export default function ItemModal({ isOpen, onClose, onSave, initialData, groupI
     if (isOpen) {
       // 1. Fetch categories
       mediaService.getCategories()
-        .then(cats => setExistingCategories(cats || []))
+        .then(res => {
+          const list = Array.isArray(res) ? res : (res?.results || []);
+          setExistingCategories(list);
+        })
         .catch(err => console.error("Failed to load categories:", err));
 
       // 2. Fetch media types & reset custom media type toggler
@@ -47,14 +52,13 @@ export default function ItemModal({ isOpen, onClose, onSave, initialData, groupI
       setExistingMediaTypes(baseList);
 
       mediaService.getMediaTypes()
-        .then(types => {
-          if (types) {
-            const merged = Array.from(new Set([...DEFAULT_MEDIA_TYPES, ...types]));
-            if (initialType && !merged.includes(initialType)) {
-              merged.push(initialType);
-            }
-            setExistingMediaTypes(merged);
+        .then(res => {
+          const typesList = Array.isArray(res) ? res : (res?.results || []);
+          const merged = Array.from(new Set([...DEFAULT_MEDIA_TYPES, ...typesList]));
+          if (initialType && !merged.includes(initialType)) {
+            merged.push(initialType);
           }
+          setExistingMediaTypes(merged);
         })
         .catch(err => console.error("Failed to load media types:", err));
 
@@ -121,6 +125,8 @@ export default function ItemModal({ isOpen, onClose, onSave, initialData, groupI
     // Clean numeric fields: empty strings must be null, otherwise integers
     const cleanedData = {
       ...formData,
+      group: formData.group || groupId || null,
+      group_id: formData.group || groupId || null,
       rating: formData.rating === '' ? null : parseInt(formData.rating, 10),
       start_year: formData.start_year === '' ? null : parseInt(formData.start_year, 10),
       end_year: formData.end_year === '' ? null : parseInt(formData.end_year, 10),

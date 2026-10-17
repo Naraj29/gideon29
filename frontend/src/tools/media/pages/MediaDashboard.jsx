@@ -16,10 +16,12 @@ import mediaService from '../services/mediaService';
 import GroupModal from '../components/GroupModal';
 import ItemModal from '../components/ItemModal';
 import MediaCards from '../components/MediaCards';
+import { useTheme } from '../../../context/ThemeContext';
 
 export default function MediaDashboard() {
   const { parentId } = useParams();
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   
   const [loading, setLoading] = useState(true);
   const [groups, setGroups] = useState([]);
@@ -203,18 +205,20 @@ export default function MediaDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0c] text-white">
-      <main className="max-w-7xl mx-auto p-6 md:p-12">
+    <div className={`w-full max-w-7xl mx-auto pb-16 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+      <div className="w-full">
         {/* Header & Breadcrumbs */}
-        <header className="mb-12">
-          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-cyan-500 mb-6 flex-wrap">
-             <Link to="/tools/media" className="hover:text-cyan-400 transition-colors">Media Root</Link>
+        <header className="mb-8 sm:mb-10">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-4 flex-wrap">
+             <Link to="/tools/media" className={isDark ? "text-cyan-400 hover:text-cyan-300 transition-colors" : "text-cyan-600 hover:text-cyan-700 transition-colors"}>
+               Media Root
+             </Link>
              {breadcrumbs.map((crumb, idx) => (
                 <React.Fragment key={crumb.id}>
-                  <ChevronRight size={14} className="text-gray-600" />
+                  <ChevronRight size={14} className={isDark ? "text-zinc-600" : "text-slate-400"} />
                   <Link 
                     to={`/tools/media/group/${crumb.id}`}
-                    className={`${idx === breadcrumbs.length - 1 ? 'text-white' : 'hover:text-cyan-400'} transition-colors`}
+                    className={`${idx === breadcrumbs.length - 1 ? (isDark ? 'text-white font-bold' : 'text-slate-900 font-bold') : (isDark ? 'text-zinc-400 hover:text-cyan-400' : 'text-slate-500 hover:text-cyan-600')} transition-colors`}
                   >
                     {crumb.name}
                   </Link>
@@ -222,27 +226,34 @@ export default function MediaDashboard() {
              ))}
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-4">
-                <Film className="w-10 h-10 text-cyan-400" /> 
+              <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
+                <Film className="w-8 h-8 text-cyan-500 shrink-0" /> 
                 {breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : 'Media Library'}
               </h1>
-              <p className="text-gray-400 mt-2 text-lg">Your curated collection of universes and stories.</p>
+              <p className={`mt-1 text-sm font-medium ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
+                Curated universe collection of movies, series, games, and literature. Offline-first & instantaneous.
+              </p>
             </div>
-            <div className="flex items-center gap-3">
+
+            <div className="flex items-center gap-2.5 shrink-0">
               <button 
                 onClick={handleExport}
                 title="Download Backup"
-                className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl transition-all border border-white/10"
+                className={`flex items-center justify-center p-2.5 rounded-2xl transition-all border ${
+                  isDark ? 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border-white/10' : 'bg-white hover:bg-slate-100 text-slate-600 hover:text-black border-slate-200 shadow-sm'
+                }`}
               >
-                <Download className="w-5 h-5" />
+                <Download className="w-4 h-4" />
               </button>
               <label 
                 title="Upload Backup"
-                className="flex items-center justify-center p-3 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl transition-all border border-white/10 cursor-pointer"
+                className={`flex items-center justify-center p-2.5 rounded-2xl transition-all border cursor-pointer ${
+                  isDark ? 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border-white/10' : 'bg-white hover:bg-slate-100 text-slate-600 hover:text-black border-slate-200 shadow-sm'
+                }`}
               >
-                <Upload className="w-5 h-5" />
+                <Upload className="w-4 h-4" />
                 <input 
                   type="file" 
                   accept=".json" 
@@ -253,16 +264,18 @@ export default function MediaDashboard() {
 
               <button 
                 onClick={() => { setEditingGroup(null); setIsGroupModalOpen(true); }}
-                className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-5 py-3 rounded-2xl transition-all font-bold border border-white/10"
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl transition-all text-sm font-bold border ${
+                  isDark ? 'bg-white/5 hover:bg-white/10 text-white border-white/10' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-200 shadow-sm'
+                }`}
               >
-                <FolderPlus className="w-5 h-5" />
+                <FolderPlus className="w-4 h-4" />
                 Folder
               </button>
               <button 
                 onClick={() => { setEditingItem(null); setIsItemModalOpen(true); }}
-                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-5 py-3 rounded-2xl transition-all font-bold shadow-lg shadow-cyan-600/20"
+                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-2xl transition-all text-sm font-bold shadow-md shadow-cyan-600/20 active:scale-95"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4" />
                 Unit
               </button>
             </div>
@@ -274,12 +287,14 @@ export default function MediaDashboard() {
              <div className="w-10 h-10 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
            </div>
         ) : (
-           <div className="space-y-12">
+           <div className="space-y-10">
              
              {/* Subfolders Grid */}
              {groups.length > 0 && (
                 <section>
-                   <h2 className="text-lg font-bold uppercase tracking-widest text-gray-500 mb-6 pl-2">Categories / Folders</h2>
+                   <h2 className={`text-xs font-bold uppercase tracking-widest mb-4 pl-1 ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
+                     Folders & Universes
+                   </h2>
                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       <AnimatePresence>
                          {groups.map((group, index) => (
@@ -289,29 +304,36 @@ export default function MediaDashboard() {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.05 }}
                               onClick={() => navigate(`/tools/media/group/${group.id}`)}
-                              className="group cursor-pointer relative bg-gradient-to-br from-black/60 to-[#1c1c1e] border border-white/5 rounded-3xl p-6 hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all flex items-center gap-4 overflow-hidden"
+                              className={`group cursor-pointer relative border rounded-3xl p-5 transition-all flex items-center gap-4 overflow-hidden ${
+                                isDark 
+                                  ? 'bg-[#18181b] border-white/8 hover:border-cyan-500/40 hover:bg-[#1c1c20] shadow-lg shadow-black/20' 
+                                  : 'bg-white border-slate-200/90 shadow-sm hover:border-cyan-500/50 hover:shadow-md'
+                              }`}
                             >
                                {group.image_url ? (
-                                  <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0">
+                                  <div className="w-12 h-12 rounded-2xl overflow-hidden shrink-0 shadow-sm">
                                      <img src={group.image_url} alt={group.name} className="w-full h-full object-cover" />
                                   </div>
                                ) : (
-                                  <div className="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl flex items-center justify-center shrink-0">
+                                  <div className="w-12 h-12 bg-cyan-500/10 text-cyan-500 rounded-2xl flex items-center justify-center shrink-0">
                                      <FolderOpen size={24} />
                                   </div>
                                )}
                                
                                <div className="min-w-0 flex-1">
-                                  <h3 className="font-bold text-white truncate group-hover:text-cyan-400 transition-colors">{group.name}</h3>
-                                  <p className="text-xs text-gray-500 truncate">{group.description || 'Category'}</p>
-                               </div>
+                                  <h3 className={`font-bold truncate transition-colors ${
+                                    isDark ? 'text-white group-hover:text-cyan-400' : 'text-slate-900 group-hover:text-cyan-600'
+                                  }`}>{group.name}</h3>
+                                  <p className={`text-xs truncate ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>{group.description || 'Folder'}</p>
+                                </div>
 
-                               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button onClick={(e) => openGroupEditor(group, e)} className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">
-                                     <span className="sr-only">Edit</span>
-                                     <div className="w-1 h-4 border-l border-r border-current opacity-50 mx-auto" />
+                               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button onClick={(e) => openGroupEditor(group, e)} className={`p-2 rounded-xl transition-colors ${
+                                    isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-slate-100 text-slate-500 hover:text-black'
+                                  }`}>
+                                     <span className="text-[10px] font-bold">Edit</span>
                                   </button>
-                                  <button onClick={(e) => handleDeleteGroup(group.id, e)} className="p-2 hover:bg-rose-500/20 rounded-lg text-gray-400 hover:text-rose-500 transition-colors">
+                                  <button onClick={(e) => handleDeleteGroup(group.id, e)} className="p-2 hover:bg-rose-500/20 rounded-xl text-rose-500 transition-colors">
                                      <Trash2 size={16} />
                                   </button>
                                </div>
@@ -324,9 +346,13 @@ export default function MediaDashboard() {
 
              {/* Media Items */}
              <section>
-                <div className="flex items-center justify-between mb-6 pl-2">
-                   <h2 className="text-lg font-bold uppercase tracking-widest text-gray-500">Media Units</h2>
-                   <span className="text-xs font-bold text-cyan-500 bg-cyan-500/10 px-3 py-1 rounded-full">{items.length} Tracked</span>
+                <div className="flex items-center justify-between mb-4 pl-1">
+                   <h2 className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-zinc-400' : 'text-slate-600'}`}>
+                     Media Units
+                   </h2>
+                   <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+                     {items.length} Tracked
+                   </span>
                 </div>
                 
                 <MediaCards 
@@ -338,7 +364,7 @@ export default function MediaDashboard() {
 
            </div>
         )}
-      </main>
+      </div>
 
       {/* Modals */}
       <GroupModal 

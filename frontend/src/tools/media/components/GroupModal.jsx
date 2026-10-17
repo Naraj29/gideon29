@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, FolderPlus } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext';
 
 export default function GroupModal({ isOpen, onClose, onSave, initialData, parentId }) {
+  const { isDark } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -34,8 +36,16 @@ export default function GroupModal({ isOpen, onClose, onSave, initialData, paren
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    onSave({
+      ...formData,
+      parent_id: formData.parent_group || parentId || null,
+      parent_group: formData.parent_group || parentId || null
+    });
   };
+
+  const inputClass = `w-full border rounded-2xl px-5 py-4 outline-none transition-all focus:ring-2 focus:ring-fuchsia-500/50 ${
+    isDark ? 'bg-black/40 border-white/10 text-white placeholder:text-zinc-600' : 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400'
+  }`;
 
   return (
     <AnimatePresence>
@@ -44,16 +54,20 @@ export default function GroupModal({ isOpen, onClose, onSave, initialData, paren
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-[#1c1c1e] border border-white/10 rounded-[2.5rem] w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 sm:p-10 shadow-2xl shadow-black/50 relative"
+          className={`border rounded-[2.5rem] w-full max-w-lg max-h-[90vh] overflow-y-auto p-8 sm:p-10 shadow-2xl relative ${
+            isDark ? 'bg-[#18181b] border-white/10 text-white shadow-black/50' : 'bg-white border-slate-200 text-slate-900 shadow-slate-900/10'
+          }`}
         >
           <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/10 blur-[100px] pointer-events-none" />
           
           <div className="flex justify-between items-center mb-8 relative z-10">
-            <h2 className="text-3xl font-bold flex items-center gap-3">
-              <FolderPlus className="text-fuchsia-400" />
+            <h2 className={`text-3xl font-bold flex items-center gap-3 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <FolderPlus className="text-fuchsia-500" />
               {initialData ? 'Edit Folder' : 'New Folder'}
             </h2>
-            <button onClick={onClose} className="p-3 hover:bg-white/5 rounded-full transition-colors text-gray-500 hover:text-white">
+            <button onClick={onClose} className={`p-3 rounded-full transition-colors ${
+              isDark ? 'hover:bg-white/5 text-gray-500 hover:text-white' : 'hover:bg-black/5 text-slate-500 hover:text-black'
+            }`}>
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -65,7 +79,7 @@ export default function GroupModal({ isOpen, onClose, onSave, initialData, paren
                 required
                 type="text" 
                 placeholder="e.g. DCEU Movies"
-                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-fuchsia-500 transition-all outline-none placeholder:text-zinc-600"
+                className={inputClass}
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value})}
               />
@@ -76,7 +90,7 @@ export default function GroupModal({ isOpen, onClose, onSave, initialData, paren
               <textarea 
                 rows="2"
                 placeholder="Optional description"
-                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-fuchsia-500 transition-all outline-none resize-none placeholder:text-zinc-600"
+                className={`${inputClass} resize-none`}
                 value={formData.description}
                 onChange={e => setFormData({...formData, description: e.target.value})}
               />
@@ -87,7 +101,7 @@ export default function GroupModal({ isOpen, onClose, onSave, initialData, paren
               <input 
                 type="url" 
                 placeholder="https://..."
-                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:ring-2 focus:ring-fuchsia-500 transition-all outline-none placeholder:text-zinc-600"
+                className={inputClass}
                 value={formData.image_url}
                 onChange={e => setFormData({...formData, image_url: e.target.value})}
               />
@@ -97,13 +111,15 @@ export default function GroupModal({ isOpen, onClose, onSave, initialData, paren
               <button 
                 type="button" 
                 onClick={onClose}
-                className="flex-1 py-4 px-6 rounded-2xl bg-white/5 hover:bg-white/10 font-bold transition-all text-gray-400 hover:text-white"
+                className={`flex-1 py-4 px-6 rounded-2xl font-bold transition-all ${
+                  isDark ? 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-black'
+                }`}
               >
                 Cancel
               </button>
               <button 
                 type="submit" 
-                className="flex-1 py-4 px-6 rounded-2xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold transition-all shadow-lg shadow-fuchsia-600/20"
+                className="flex-1 py-4 px-6 rounded-2xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold transition-all shadow-lg shadow-fuchsia-600/20 active:scale-95"
               >
                 {initialData ? 'Update Folder' : 'Create Folder'}
               </button>

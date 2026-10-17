@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, CheckCircle2, Clock, PlayCircle, MoreHorizontal, Video, Book, Gamepad2, Mic, Image as ImageIcon } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext';
 
 const getIconForType = (type) => {
   switch (type) {
@@ -41,12 +42,16 @@ const getStatusIcon = (status) => {
 };
 
 export default function MediaCards({ items, onEdit, onDelete }) {
+  const { isDark } = useTheme();
+
   if (!items || items.length === 0) {
     return (
-      <div className="text-center py-24 border-2 border-dashed border-white/5 rounded-[3rem]">
-        <Video className="w-16 h-16 text-gray-700 mx-auto mb-6" />
-        <h3 className="text-xl font-bold text-gray-400">No Media Units</h3>
-        <p className="text-gray-600 mt-2">Add your first movie, series, or book.</p>
+      <div className={`text-center py-20 border-2 border-dashed rounded-[2.5rem] ${
+        isDark ? 'border-white/5 bg-white/[0.01]' : 'border-slate-200 bg-white/50'
+      }`}>
+        <Video className="w-16 h-16 text-slate-400 dark:text-gray-700 mx-auto mb-4" />
+        <h3 className={`text-xl font-bold ${isDark ? 'text-gray-400' : 'text-slate-800'}`}>No Media Units</h3>
+        <p className={`mt-1 text-sm ${isDark ? 'text-gray-600' : 'text-slate-500'}`}>Add your first movie, series, or book.</p>
       </div>
     );
   }
@@ -62,7 +67,9 @@ export default function MediaCards({ items, onEdit, onDelete }) {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ delay: index * 0.05 }}
             onClick={() => onEdit(item)}
-            className="group relative bg-[#1c1c1e] border border-white/5 rounded-[2rem] overflow-hidden cursor-pointer hover:border-cyan-500/30 transition-all flex flex-col h-full"
+            className={`group relative border rounded-[2rem] overflow-hidden cursor-pointer transition-all flex flex-col h-full ${
+              isDark ? 'bg-[#18181b] border-white/8 hover:border-cyan-500/40 shadow-lg shadow-black/20' : 'bg-white border-slate-200/90 hover:border-cyan-500/50 shadow-sm hover:shadow-md'
+            }`}
           >
             {/* Poster Image */}
             <div className="aspect-[2/3] w-full bg-black/40 relative overflow-hidden group-hover:scale-105 transition-transform duration-700">
@@ -110,7 +117,9 @@ export default function MediaCards({ items, onEdit, onDelete }) {
             </div>
 
             {/* Bottom metadata */}
-            <div className="p-4 bg-[#1c1c1e] flex items-center justify-between border-t border-white/5 relative z-10 hidden group-hover:flex">
+            <div className={`p-4 flex items-center justify-between border-t relative z-10 hidden group-hover:flex ${
+              isDark ? 'bg-[#18181b] border-white/5' : 'bg-white border-slate-100'
+            }`}>
                 <div className="flex items-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-wider">
                   {item.rating ? (
                     <><Star className="w-3 h-3 fill-amber-500" /> {item.rating}/10</>
