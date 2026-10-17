@@ -1,0 +1,239 @@
+/* src/components/GideonCamera/GideonCamera.css */
+
+:root {
+  --sidebar-width: 68px;
+  --accent-color: #3b82f6;
+  --accent-glow: rgba(59, 130, 246, 0.4);
+  --glass-bg: rgba(9, 9, 11, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(50px);
+}
+
+.gideon-camera-container {
+  position: fixed; 
+  inset: 0;
+  z-index: 100000; 
+  background: #000;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.camera-feed-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1) !important;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* STEALTH VIDEO LAYER: Isolated from McAfee Web Boost */
+.stealth-video-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
+  pointer-events: none;
+  z-index: -100;
+  object-fit: cover;
+}
+
+/* UI Layer */
+.camera-ui-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* --- THE ARC DOCK (Beyond Industry UX) --- */
+.gideon-sidebar {
+  position: absolute;
+  right: 32px;
+  top: 160px; 
+  width: var(--sidebar-width);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  pointer-events: auto;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.9);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sidebar-tool {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.25);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.sidebar-tool:hover, .sidebar-tool.near-focus {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: scale(1.1);
+}
+
+.sidebar-tool.active {
+  background: var(--accent-color);
+  color: white;
+  box-shadow: 0 0 30px var(--accent-glow);
+  /* Neural Pulse Animation */
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.tool-tooltip {
+  position: absolute;
+  right: 80px;
+  background: #000;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(10px);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  white-space: nowrap;
+  border: 1px solid var(--glass-border);
+}
+
+.sidebar-tool:hover .tool-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+/* --- NEURAL CORE HARDENING UI --- */
+.neural-overlay-pulse {
+  animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* MOBILE RESPONSIVE CALIBRATION */
+@media (max-width: 850px) {
+  .gideon-sidebar {
+    right: 28px;
+    bottom: 28px; /* Safe from global bottom nav (now removed from DOM) */
+    top: auto;
+    width: 84px;
+    height: auto;
+    max-height: 400px;
+    padding: 24px 12px;
+    /* ARCH DESIGN: Curved to match thumb natural reach */
+    border-radius: 40px;
+    background: rgba(9, 9, 11, 0.92);
+    box-shadow: -20px -20px 60px rgba(0, 0, 0, 0.4);
+    flex-direction: column-reverse; /* Tools stacked from bottom up for thumb priority */
+    gap: 20px;
+  }
+
+  .sidebar-tool {
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+  }
+
+  .sidebar-tool.active {
+    transform: scale(1.15);
+  }
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 20px var(--accent-glow); }
+  50% { transform: scale(1.08); box-shadow: 0 0 50px var(--accent-glow); }
+  100% { transform: scale(1); box-shadow: 0 0 20px var(--accent-glow); }
+}
+
+/* Header & Status */
+.vision-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.engine-status-pill {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: var(--glass-blur);
+  padding: 12px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.status-dot.active {
+  background: #10b981;
+  box-shadow: 0 0 15px #10b981;
+}
+
+.close-button-p {
+  width: 60px;
+  height: 60px;
+  border-radius: 22px;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  color: #f43f5e;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.close-button-p:hover {
+  background: #f43f5e;
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+}
+
+.vision-footer {
+  position: absolute;
+  bottom: 40px;
+  left: 32px; /* Moved left to make space for the Right-Side Arc Dock */
+  pointer-events: none;
+}

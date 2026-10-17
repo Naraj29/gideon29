@@ -1,0 +1,189 @@
+/* ==========================================================
+   UC Tools — Unified Premium Design System
+   Architecture: Tailwind 4 + PostCSS
+   Typography: Inter (Sans-serif) for all elements
+   Theme: Adaptive Obsidian & Clean Alabaster
+   ========================================================== */
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --color-brand-primary: #f59e0b; /* Amber */
+  --color-brand-secondary: #3b82f6; /* Blue */
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply font-sans selection:bg-amber-500/30 antialiased min-h-screen;
+    background-color: var(--bg-deep, #ffffff);
+    color: var(--text-primary, #0f172a);
+    margin: 0;
+    padding: 0;
+  }
+
+  html.dark body {
+    background-color: #09090b;
+    color: #f5f5f7;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+    color: #0f172a;
+  }
+
+  html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6 {
+    color: #ffffff;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.55);
+  }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .scrollbar-premium::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-premium::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-premium::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 9999px;
+  }
+  html.dark .scrollbar-premium::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Core UI Primitives */
+  .glass {
+    @apply backdrop-blur-xl transition-all;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  html.dark .glass {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  }
+
+  .btn-premium {
+    @apply px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 
+           active:scale-95 disabled:opacity-50 disabled:pointer-events-none
+           flex items-center justify-center gap-2;
+  }
+
+  .btn-primary {
+    @apply bg-amber-500 text-black hover:bg-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)];
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-xl transition-all;
+    background-color: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  html.dark .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  html.dark .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Premium Cards */
+  .card-premium {
+    @apply backdrop-blur-xl p-6 rounded-3xl transition-all duration-300;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    color: #0f172a;
+  }
+
+  .card-premium:hover {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  html.dark .card-premium {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    color: #f5f5f7;
+  }
+
+  html.dark .card-premium:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(245, 158, 11, 0.35);
+  }
+
+  /* Form Fields */
+  .input-premium {
+    @apply w-full rounded-2xl px-5 py-4 focus:outline-none focus:ring-2
+           focus:ring-amber-500/40 focus:border-amber-500/50
+           transition-all duration-300 backdrop-blur-md font-sans text-base;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+
+  .input-premium::placeholder {
+    color: #94a3b8;
+  }
+
+  html.dark .input-premium {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  html.dark .input-premium::placeholder {
+    color: #71717a;
+  }
+}
